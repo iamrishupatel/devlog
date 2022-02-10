@@ -1,0 +1,108 @@
+.container {
+  min-height: 100vh;
+  display: flex;
+  gap: 1rem;
+  margin-top: 7rem;
+}
+
+.container section {
+  flex: 1;
+  margin-bottom: 1rem;
+}
+
+.container aside {
+  display: flex;
+  flex-direction: column;
+  width: 20%;
+  min-width: 250px;
+  text-align: center;
+  position: sticky;
+  top: 7rem;
+  height: fit-content;
+}
+
+.container aside button {
+  width: 100%;
+}
+
+.hidden {
+  display: none;
+}
+
+.controls {
+  display: flex;
+  flex-direction: column;
+}
+
+.controls textarea {
+  height: 40rem;
+  border: none;
+  outline: none;
+  padding: 0.8rem;
+  font-size: 1rem;
+  background-color: var(--color-primary);
+  color: var(--color-text);
+}
+
+.input {
+  outline: none;
+  border: none;
+  font-size: 2.5rem;
+  width: 100%;
+  padding: 5px 10px;
+}
+
+.checkbox {
+  display: inline;
+  width: auto;
+}
+
+@media only screen and (max-width: 768px) {
+  .container {
+    flex-direction: column;
+    margin-top: 6rem;
+  }
+
+  .container section {
+    width: 100%;
+    margin-bottom: 0;
+  }
+
+  .container aside {
+    width: 100%;
+    position: relative;
+    padding-bottom: 1rem;
+    top: 0;
+    text-align: left;
+  }
+
+  .input {
+    font-size: 1.4rem;
+  }
+  .controls textarea {
+    font-size: 1rem;
+  }
+}
+
+/* dasboards */
+.dashboard {
+  margin-top: 7rem;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.createPost h1,
+.createPost p {
+  margin: 0.8rem 0;
+}
+.container h1,
+.container p {
+  margin: 0.8rem 0;
+}
+
+@media only screen and (max-width: 768px) {
+  .dashboard h1 {
+    font-size: 1.6rem;
+  }
+}

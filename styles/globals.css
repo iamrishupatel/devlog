@@ -1,0 +1,289 @@
+@import url("https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,500;1,600;1,700;1,800&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600;1,700&display=swap");
+
+* {
+  box-sizing: border-box;
+}
+:root {
+  /* changes in dark mode */
+  --color-bg: #eef0f1;
+  --color-text: #08090a;
+  --color-primary: #fff;
+  --color-border: #c0c0cf;
+  --color-btn: #c0c0cf;
+
+  /* does not change in dark mode */
+  --color-accent: #1dd1a1;
+  --color-blue: #5f27cd;
+  --color-red: #df3b3b;
+  --color-green: #3bdf72;
+  --color-gray: #b5bdc4;
+  --color-white: #fff;
+}
+
+body {
+  padding: 0;
+  margin: 0;
+  font-family: "Poppins", sans-serif;
+
+  background-color: var(--color-bg);
+  color: var(--color-text);
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: "Montserrat", sans-serif;
+  margin: 0;
+}
+p {
+  margin: 0;
+  margin-bottom: 0.4rem;
+}
+
+a,
+input,
+button,
+textarea {
+  font-family: "Poppins", sans-serif;
+}
+
+main {
+  padding: 0 10vw;
+  margin-top: 6rem;
+}
+@media only screen and (max-width: 768px) {
+  main {
+    padding: 0 5vw;
+  }
+}
+
+h1 {
+  font-size: 2rem;
+}
+h2 {
+  font-size: 1.5rem;
+}
+h2 {
+  font-size: 1.25rem;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+img {
+  max-width: 100%;
+}
+
+input {
+  display: inline-block;
+  outline: none;
+  border: none;
+  font-size: 1.5rem;
+  width: 100%;
+  padding: 5px 10px;
+  border-radius: 8px;
+}
+
+fieldset {
+  border: none;
+  padding: 1rem 0;
+}
+
+code {
+  overflow-x: scroll;
+  font-family: "Courier New", Courier, monospace;
+}
+
+/* Buttons */
+
+.btn,
+button {
+  background-color: var(--color-btn);
+  border: none;
+  color: var(--color-text);
+  padding: 1rem 2rem;
+  display: flex;
+  align-items: center;
+  text-align: center;
+  justify-content: center;
+  text-decoration: none;
+  font-weight: bold;
+  border-radius: 0.25rem;
+  cursor: pointer;
+  margin: 0.5rem 0;
+}
+
+button:hover {
+  filter: brightness(90%);
+}
+
+button:disabled,
+button[disabled] {
+  filter: brightness(80%);
+  cursor: not-allowed;
+}
+
+button.btn-blue {
+  background-color: var(--color-blue);
+  color: var(--color-white);
+}
+button.btn-accent {
+  background-color: var(--color-accent);
+  color: var(--color-white);
+}
+
+button.btn-red {
+  background-color: var(--color-red);
+  color: var(--color-white);
+}
+
+button.btn-green {
+  background-color: var(--color-green);
+  color: var(--color-white);
+}
+
+button.btn-google {
+  background-color: var(--color-primary);
+  color: var(--color-text);
+}
+
+.btn-google img {
+  width: 30px;
+  margin-right: 10px;
+}
+
+button.btn-logo {
+  background-color: var(--color-text);
+  color: var(--color-white);
+  text-transform: uppercase;
+  font-size: 1.5rem;
+  padding: 0.5rem 1rem;
+}
+
+@media only screen and (max-width: 768px) {
+  button {
+    padding: 0.5rem 1rem;
+    font-size: 0.8rem;
+  }
+}
+
+/* Cards */
+
+.card {
+  padding: 2rem;
+  /* margin: 1rem 0; */
+  background-color: var(--color-primary);
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.card h1 {
+  margin: 0.4rem 0;
+}
+
+.card footer {
+  display: flex;
+}
+
+.card-img-center {
+  width: 20%;
+  display: block;
+  margin: auto;
+  border-radius: 50%;
+  max-width: 150px;
+}
+
+.card-info {
+  color: var(--color-white);
+  background: var(--color-accent);
+}
+
+@media only screen and (max-width: 768px) {
+  .card {
+    padding: 1rem;
+  }
+  .card footer {
+    font-size: 0.8rem;
+  }
+}
+
+/* Utilities */
+
+.push-left {
+  margin-left: auto;
+}
+
+.text-sm {
+  font-size: 0.85rem;
+}
+
+.text-danger {
+  font-weight: bold;
+  color: var(--color-red);
+}
+
+.text-success {
+  font-weight: bold;
+  color: var(--color-green);
+}
+
+.text-info {
+  font-weight: bold;
+  color: var(--color-accent);
+}
+
+.box {
+  display: flex;
+  justify-content: space-between;
+}
+
+.box-center {
+  display: flex;
+  flex-direction: column;
+  align-content: center;
+  text-align: center;
+}
+
+.hidden {
+  display: none;
+}
+
+.d-flex {
+  display: flex;
+}
+
+.rounded {
+  border-radius: 100%;
+}
+
+
+
+/* 404 */
+
+.notFound img {
+  object-fit: contain;
+}
+.notFound {
+  gap: 1rem;
+  padding-top: 4rem;
+}
+.notFound button {
+  width: fit-content;
+  align-self: center;
+}
+
+@media only screen and (max-width: 768px) {
+  .notFound h1 {
+    font-size: 1.2rem;
+  }
+}

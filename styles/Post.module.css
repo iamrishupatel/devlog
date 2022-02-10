@@ -1,0 +1,48 @@
+.container {
+  min-height: 100vh;
+  display: flex;
+  gap: 1rem;
+}
+
+.container section {
+  width: 80%;
+}
+.container aside p {
+  margin: 0;
+}
+.container aside {
+  border: 1px solid var(--color-border);
+  background-color: var(--color-primary);
+
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  /* width: 20%; */
+  min-width: 250px;
+  padding: 2rem;
+  gap: 1rem;
+  position: sticky;
+  /* top: 6rem; */
+  height: fit-content;
+}
+.container aside button {
+  margin: 0;
+  width: 100%;
+}
+
+@media only screen and (max-width: 768px) {
+  .container {
+    flex-direction: column;
+  }
+
+  .container section {
+    width: 100%;
+  }
+
+  .container aside {
+    width: 100%;
+    position: relative;
+    top: 0;
+  }
+}

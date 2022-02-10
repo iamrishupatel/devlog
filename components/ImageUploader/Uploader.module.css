@@ -1,0 +1,38 @@
+
+/* File uploads */
+.uploader {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+.uploader label {
+  margin: 0;
+  padding: 1rem 1rem;
+}
+
+.uploader input[type="file"] {
+  display: none;
+}
+
+.snippet {
+  flex: 1;
+
+  background: var(--color-primary);
+  color: var(--color-text);
+  padding: 5px;
+  margin: 5px 0;
+  word-break: break-all;
+}
+
+@media only screen and (max-width: 768px) {
+  .uploader {
+    flex-direction: column;
+  }
+  .uploader label {
+    width: 100%;
+  }
+  .snippet {
+    width: 100%;
+  }
+}
