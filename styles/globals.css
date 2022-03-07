@@ -266,8 +266,6 @@ button.btn-logo {
   border-radius: 100%;
 }
 
-
-
 /* 404 */
 
 .notFound img {
@@ -286,4 +284,13 @@ button.btn-logo {
   .notFound h1 {
     font-size: 1.2rem;
   }
+}
+
+
+/*  confirm overlay */
+
+.confirm-overlay {
+  background-color: var(--color-bg) !important;
+  animation-duration: 0s !important;
+  animation-delay: 0s !important;
 }

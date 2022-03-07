@@ -12,6 +12,7 @@ import ReactMarkdown from "react-markdown";
 import Link from "next/link";
 import toast from "react-hot-toast";
 import Metatags from "../../components/Metatags";
+import { confirmAlert } from "react-confirm-alert";
 
 export default function AdminPostEdit(props) {
   return (
@@ -136,16 +137,42 @@ function DeletePostButton({ postRef }) {
   const router = useRouter();
 
   const deletePost = async () => {
-    const doIt = confirm("are you sure!");
-    if (doIt) {
-      await postRef.delete();
-      router.push("/admin");
-      toast("post annihilated ", { icon: "🗑️" });
-    }
+    const toastId = toast.loading("Deleting..");
+    await postRef.delete();
+    router.push("/admin");
+    toast.success("post annihilated ", { icon: "🗑️", id: toastId });
+  };
+
+  const handleClick = () => {
+    confirmAlert({
+      overlayClassName: "confirm-overlay",
+      customUI: ({ onClose }) => {
+        return (
+          <div className="card">
+            <h1>Are you sure?</h1>
+            <p>You want to delete this Post?</p>
+            <div style={{ display: "flex", gap: "1rem" }}>
+              <button className="btn-green" onClick={onClose}>
+                No
+              </button>
+              <button
+                className="btn-red"
+                onClick={async () => {
+                  await deletePost();
+                  onClose();
+                }}
+              >
+                Yes, Delete it!
+              </button>
+            </div>
+          </div>
+        );
+      },
+    });
   };
 
   return (
-    <button className="btn-red" onClick={deletePost}>
+    <button className="btn-red" onClick={handleClick}>
       Delete
     </button>
   );
