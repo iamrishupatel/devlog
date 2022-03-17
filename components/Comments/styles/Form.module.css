@@ -1,0 +1,42 @@
+.container {
+  display: flex;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+.container img {
+  height: 2rem;
+  width: 2rem;
+  border-radius: 100%;
+}
+
+.preview{
+  border: 1px solid var(--color-border);
+  padding: 0.4rem 0.8rem;
+  border-radius: 0.5rem;
+  width: 100%;
+  
+}
+.form {
+  width: 100%;
+}
+.form textarea {
+  height: 8rem;
+  width: 100%;
+  border-radius: 0.5rem;
+  border: none;
+  outline: none;
+  padding: 0.8rem;
+  font-size: 1rem;
+  background-color: var(--color-bg);
+  color: var(--color-text);
+  border: 1px solid var(--color-border);
+  transition: 0.2s;
+}
+
+.actions {
+  display: flex;
+  gap: 0.8rem;
+}
+.actions button {
+  padding: 0.4rem 0.8rem;
+}

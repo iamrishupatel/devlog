@@ -3,6 +3,7 @@ import PostContent from "../../components/PostContent";
 import HeartButton from "../../components/HeartButton";
 import AuthCheck from "../../components/AuthCheck";
 import Metatags from "../../components/Metatags";
+import Comments from "../../components/Comments";
 import { UserContext } from "../../lib/context/userContext";
 import { firestore, getUserWithUsername, postToJSON } from "../../lib/firebase";
 
@@ -61,6 +62,7 @@ export default function Post(props) {
 
       <section>
         <PostContent post={post} />
+        <Comments postRef={postRef} />
       </section>
 
       <aside>
