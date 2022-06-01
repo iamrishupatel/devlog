@@ -1,6 +1,6 @@
 import s from "../../styles/Admin.module.css";
 import AuthCheck from "../../components/AuthCheck";
-import { firestore, auth, serverTimestamp } from "../../lib/firebase";
+import { db, auth } from "../../lib/firebase";
 import ImageUploader from "../../components/ImageUploader";
 
 import { useState, Fragment } from "react";
@@ -13,6 +13,7 @@ import Link from "next/link";
 import toast from "react-hot-toast";
 import Metatags from "../../components/Metatags";
 import { confirmAlert } from "react-confirm-alert";
+import { doc, updateDoc, serverTimestamp, deleteDoc } from "firebase/firestore";
 
 export default function AdminPostEdit(props) {
   return (
@@ -28,11 +29,9 @@ function PostManager() {
   const router = useRouter();
   const { slug } = router.query;
 
-  const postRef = firestore
-    .collection("users")
-    .doc(auth.currentUser.uid)
-    .collection("posts")
-    .doc(slug);
+  const userRef = doc(db, "users", auth.currentUser.uid);
+  const postRef = doc(userRef, "posts", slug);
+
   const [post] = useDocumentDataOnce(postRef);
 
   return (
@@ -48,6 +47,7 @@ function PostManager() {
               postRef={postRef}
               defaultValues={post}
               preview={preview}
+              slug={slug}
             />
           </section>
 
@@ -67,7 +67,7 @@ function PostManager() {
   );
 }
 
-function PostForm({ defaultValues, postRef, preview }) {
+function PostForm({ defaultValues, postRef, preview, slug }) {
   const { register, errors, handleSubmit, formState, reset, watch } = useForm({
     defaultValues,
     mode: "onChange",
@@ -76,7 +76,7 @@ function PostForm({ defaultValues, postRef, preview }) {
   const { isValid, isDirty } = formState;
 
   const updatePost = async ({ content, published }) => {
-    await postRef.update({
+    await updateDoc(postRef, {
       content,
       published,
       updatedAt: serverTimestamp(),
@@ -96,7 +96,7 @@ function PostForm({ defaultValues, postRef, preview }) {
       )}
 
       <div className={preview ? s.hidden : s.controls}>
-        <ImageUploader />
+        <ImageUploader slug={slug} />
 
         <textarea
           name="content"
@@ -138,7 +138,7 @@ function DeletePostButton({ postRef }) {
 
   const deletePost = async () => {
     const toastId = toast.loading("Deleting..");
-    await postRef.delete();
+    await deleteDoc(postRef);
     router.push("/admin");
     toast.success("post annihilated ", { icon: "🗑️", id: toastId });
   };
