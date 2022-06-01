@@ -1,6 +1,5 @@
 import { Fragment, useContext, useState } from "react";
 import { UserContext } from "../../lib/context/userContext";
-import { serverTimestamp, increment } from "../../lib/firebase";
 import { useCollectionData } from "react-firebase-hooks/firestore";
 import Form from "./Form";
 import Comment from "./Comment";
@@ -8,14 +7,25 @@ import AuthCheck from "../AuthCheck";
 import LoginAlert from "../LoginAlert";
 import formStyles from "./styles/Form.module.css";
 import { toast } from "react-hot-toast";
+import {
+  query,
+  collection,
+  where,
+  orderBy,
+  serverTimestamp,
+  increment,
+  updateDoc,
+  addDoc,
+} from "firebase/firestore";
 
 export default function Comments({ postRef }) {
-  const query = postRef
-    .collection("comments")
-    .orderBy("createdAt", "desc")
-    .where("parentId", "==", postRef.id);
+  const commentsQuery = query(
+    collection(postRef, "comments"),
+    where("parentId", "==", postRef.id),
+    orderBy("createdAt", "desc")
+  );
 
-  const [comments] = useCollectionData(query, {
+  const [comments] = useCollectionData(commentsQuery, {
     idField: "id",
   });
 
@@ -88,8 +98,8 @@ const AddComment = ({ postRef }) => {
       },
     };
     try {
-      await postRef.collection("comments").add(data);
-      await postRef.update({ commentCount: increment(1) });
+      await addDoc(collection(postRef, "comments"), data);
+      await updateDoc(postRef, { commentCount: increment(1) });
       actions.resetForm();
       toast.success("Comment added successfully!");
     } catch (e) {

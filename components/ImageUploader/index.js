@@ -1,10 +1,11 @@
 import { useState } from "react";
-import { auth, storage, STATE_CHANGED } from "../../lib/firebase";
+import { auth, storage } from "../../lib/firebase";
 import Loader from "../Loader";
 import s from "./Uploader.module.css";
+import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 
 // Uploads images to Firebase Storage
-export default function ImageUploader() {
+export default function ImageUploader({ slug }) {
   const [uploading, setUploading] = useState(false);
   const [progress, setProgress] = useState(0);
   const [downloadURL, setDownloadURL] = useState(null);
@@ -13,33 +14,47 @@ export default function ImageUploader() {
   const uploadFile = async e => {
     // Get the file
     const file = Array.from(e.target.files)[0];
-    const extension = file.type.split("/")[1];
 
     // Makes reference to the storage bucket location
-    const ref = storage.ref(
-      `uploads/${auth.currentUser.uid}/${Date.now()}.${extension}`
+    const imageRef = ref(
+      storage,
+      `uploads/${auth.currentUser.uid}/${slug}/${Date.now()}-${file.name}`
     );
     setUploading(true);
 
     // Starts the upload
-    const task = ref.put(file);
+    const task = uploadBytesResumable(imageRef, file);
 
     // Listen to updates to upload task
-    task.on(STATE_CHANGED, snapshot => {
-      const pct = (
-        (snapshot.bytesTransferred / snapshot.totalBytes) *
-        100
-      ).toFixed(0);
-      setProgress(pct);
-    });
+    task.on(
+      "state_changed",
+      snapshot => {
+        const pct = (
+          (snapshot.bytesTransferred / snapshot.totalBytes) *
+          100
+        ).toFixed(0);
+        setProgress(pct);
+      },
+      error => {
+        console.log("unable to upload file");
+        console.log(error.code);
+      },
+      () => {
+        // Upload completed successfully, now we can get the download URL
+        getDownloadURL(task.snapshot.ref).then(downloadURL => {
+          setDownloadURL(downloadURL);
+          setUploading(false);
+        });
+      }
+    );
 
     // Get downloadURL AFTER task resolves (Note: this is not a native Promise)
-    task
-      .then(d => ref.getDownloadURL())
-      .then(url => {
-        setDownloadURL(url);
-        setUploading(false);
-      });
+    // task
+    //   .then(d => ref.getDownloadURL())
+    //   .then(url => {
+    // setDownloadURL(url);
+    // setUploading(false);
+    //   });
   };
 
   return (

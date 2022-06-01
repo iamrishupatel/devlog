@@ -1,9 +1,12 @@
-import { auth, firestore, googleAuthProvider } from "../lib/firebase";
+import { auth, db, googleAuthProvider } from "../lib/firebase";
 import { UserContext } from "../lib/context/userContext";
 import Metatags from "../components/Metatags";
 
 import { useEffect, useState, useCallback, useContext } from "react";
 import debounce from "lodash.debounce";
+
+import { signInWithPopup } from "firebase/auth";
+import { writeBatch, doc, getDoc } from "firebase/firestore";
 
 export default function SignInPage(props) {
   const { user, username } = useContext(UserContext);
@@ -13,7 +16,10 @@ export default function SignInPage(props) {
   // 3. user signed in, has username <SignOutButton />
   return (
     <main>
-      <Metatags title="Authentication" description="Sign up for this amazing app!" />
+      <Metatags
+        title="Authentication"
+        description="Sign up for this amazing app!"
+      />
       {user ? (
         !username ? (
           <UsernameForm />
@@ -30,7 +36,7 @@ export default function SignInPage(props) {
 // Sign in with Google button
 function SignInButton() {
   const signInWithGoogle = async () => {
-    await auth.signInWithPopup(googleAuthProvider);
+    await signInWithPopup(auth, googleAuthProvider);
   };
 
   return (
@@ -57,11 +63,11 @@ function UsernameForm() {
     e.preventDefault();
 
     // Create refs for both documents
-    const userDoc = firestore.doc(`users/${user.uid}`);
-    const usernameDoc = firestore.doc(`usernames/${formValue}`);
+    const userDoc = doc(db, "users", user.uid);
+    const usernameDoc = doc(db, "usernames", formValue);
 
     // Commit both docs together as a batch write.
-    const batch = firestore.batch();
+    const batch = writeBatch(db);
     batch.set(userDoc, {
       username: formValue,
       photoURL: user.photoURL,
@@ -103,10 +109,12 @@ function UsernameForm() {
   const checkUsername = useCallback(
     debounce(async username => {
       if (username.length >= 3) {
-        const ref = firestore.doc(`usernames/${username}`);
-        const { exists } = await ref.get();
-        console.log("Firestore read executed!");
-        setIsValid(!exists);
+        const ref = doc(db, "usernames", username);
+        const userDoc = await getDoc(ref);
+        
+        const exist = userDoc.exists();
+
+        setIsValid(!exist);
         setLoading(false);
       }
     }, 500),
