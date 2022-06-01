@@ -6,7 +6,7 @@ import { useEffect, useState, useCallback, useContext } from "react";
 import debounce from "lodash.debounce";
 
 import { signInWithPopup } from "firebase/auth";
-import { writeBatch, doc } from "firebase/firestore";
+import { writeBatch, doc, getDoc } from "firebase/firestore";
 
 export default function SignInPage(props) {
   const { user, username } = useContext(UserContext);
@@ -63,8 +63,8 @@ function UsernameForm() {
     e.preventDefault();
 
     // Create refs for both documents
-    const userDoc = doc(`users/${user.uid}`);
-    const usernameDoc = doc(`usernames/${formValue}`);
+    const userDoc = doc(db, "users", user.uid);
+    const usernameDoc = doc(db, "usernames", formValue);
 
     // Commit both docs together as a batch write.
     const batch = writeBatch(db);
@@ -109,10 +109,12 @@ function UsernameForm() {
   const checkUsername = useCallback(
     debounce(async username => {
       if (username.length >= 3) {
-        const ref = doc(`usernames/${username}`);
-        const { exists } = await getDoc(ref);
-        console.log("Firestore read executed!");
-        setIsValid(!exists);
+        const ref = doc(db, "usernames", username);
+        const userDoc = await getDoc(ref);
+
+        const exist = userDoc.exists();
+
+        setIsValid(!exist);
         setLoading(false);
       }
     }, 500),
