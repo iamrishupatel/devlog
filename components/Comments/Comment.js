@@ -3,13 +3,7 @@ import Link from "next/link";
 import s from "./styles/Comments.module.css";
 import ReactMarkdown from "react-markdown";
 import { UserContext } from "../../lib/context/userContext";
-import {
-  serverTimestamp,
-  firestore,
-  auth,
-  increment,
-  arrayUnion,
-} from "../../lib/firebase";
+import { db, auth } from "../../lib/firebase";
 import { useDocument, useDocumentData } from "react-firebase-hooks/firestore";
 import { AiOutlineHeart, AiFillHeart } from "react-icons/ai";
 import { MdOutlineDelete } from "react-icons/md";
@@ -22,6 +16,16 @@ import { toast } from "react-hot-toast";
 import Form from "./Form";
 import PopConfirm from "../PopConfirm";
 import AuthCheck from "../AuthCheck";
+import {
+  doc,
+  writeBatch,
+  updateDoc,
+  serverTimestamp,
+  addDoc,
+  collection,
+  increment,
+  arrayUnion,
+} from "firebase/firestore";
 
 export default function Comment({
   comment,
@@ -29,7 +33,7 @@ export default function Comment({
   level,
   setIsAlertLoginVisible,
 }) {
-  const commentRef = postRef.collection("comments").doc(comment.id);
+  const commentRef = doc(postRef, "comments", comment.id);
 
   const [showReply, setShowReply] = useState(false);
 
@@ -144,7 +148,7 @@ const DropDown = ({ postRef, commentRef, comment }) => {
             description="You want to delete this comment"
             onClose={onClose}
             onConfirm={async () => {
-              const batch = firestore.batch();
+              const batch = writeBatch(db);
               batch.delete(commentRef);
 
               if (comment.parentId === postRef.id) {
@@ -174,7 +178,7 @@ const DropDown = ({ postRef, commentRef, comment }) => {
       customUI: ({ onClose }) => {
         const handleSubmit = async (values, actions) => {
           try {
-            await commentRef.update({
+            await updateDoc(commentRef, {
               body: values.body,
             });
             toast.success("Comment edited successfully");
@@ -222,7 +226,7 @@ const DropDown = ({ postRef, commentRef, comment }) => {
 };
 
 const Actions = ({ commentRef, comment, level, setShowReply }) => {
-  const heartRef = commentRef.collection("hearts").doc(auth.currentUser.uid);
+  const heartRef = doc(commentRef, "hearts", auth.currentUser.uid);
   const [heartDoc] = useDocument(heartRef);
 
   const handleAddReply = () => {
@@ -231,7 +235,7 @@ const Actions = ({ commentRef, comment, level, setShowReply }) => {
 
   const addHeart = async () => {
     const uid = auth.currentUser.uid;
-    const batch = firestore.batch();
+    const batch = writeBatch(db);
 
     batch.update(commentRef, { heartCount: increment(1) });
     batch.set(heartRef, { uid });
@@ -240,7 +244,7 @@ const Actions = ({ commentRef, comment, level, setShowReply }) => {
   };
 
   const removeHeart = async () => {
-    const batch = firestore.batch();
+    const batch = writeBatch(db);
 
     batch.update(commentRef, { heartCount: increment(-1) });
     batch.delete(heartRef);
@@ -251,7 +255,7 @@ const Actions = ({ commentRef, comment, level, setShowReply }) => {
   return (
     <div className={s.actions}>
       {/** ---- heart icon --- */}
-      {heartDoc && heartDoc.exists ? (
+      {heartDoc && heartDoc.exists() ? (
         <button onClick={removeHeart} className={s.hearted}>
           <AiFillHeart className={s.icon} />
           {comment.heartCount}
@@ -315,8 +319,9 @@ const ReplyForm = ({ commentRef, postRef, setShowReply }) => {
         uid: user.uid,
       },
     };
-    const docRef = await postRef.collection("comments").add(data);
-    await commentRef.update({
+    // add a new comment inside the comments collection
+    const docRef = await addDoc(collection(postRef, "comments"), data);
+    await updateDoc(commentRef, {
       replies: arrayUnion(docRef),
     });
     actions.resetForm({

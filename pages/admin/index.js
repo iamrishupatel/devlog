@@ -2,7 +2,7 @@ import s from "../../styles/Admin.module.css";
 import AuthCheck from "../../components/AuthCheck";
 import PostFeed from "../../components/PostFeed";
 import { UserContext } from "../../lib/context/userContext";
-import { firestore, auth, serverTimestamp } from "../../lib/firebase";
+import { db, auth } from "../../lib/firebase";
 
 import { useContext, useState } from "react";
 import { useRouter } from "next/router";
@@ -11,6 +11,14 @@ import { useCollection } from "react-firebase-hooks/firestore";
 import kebabCase from "lodash.kebabcase";
 import toast from "react-hot-toast";
 import Metatags from "../../components/Metatags";
+import {
+  query,
+  doc,
+  orderBy,
+  collection,
+  serverTimestamp,
+  setDoc,
+} from "firebase/firestore";
 
 export default function AdminPostsPage(props) {
   return (
@@ -25,15 +33,11 @@ export default function AdminPostsPage(props) {
 }
 
 function PostList() {
-  const ref = firestore
-    .collection("users")
-    .doc(auth.currentUser.uid)
-    .collection("posts");
-  const query = ref.orderBy("createdAt");
-  const [querySnapshot] = useCollection(query);
+  const userRef = doc(db, "users", auth.currentUser.uid);
+  const q = query(collection(userRef, "posts"), orderBy("createdAt"));
+  const [querySnapshot] = useCollection(q);
 
   const posts = querySnapshot?.docs.map(doc => doc.data());
-
   return (
     <div>
       <h2>Manage your Posts</h2>
@@ -57,13 +61,11 @@ function CreateNewPost() {
   const createPost = async e => {
     e.preventDefault();
     const uid = auth.currentUser.uid;
-    const ref = firestore
-      .collection("users")
-      .doc(uid)
-      .collection("posts")
-      .doc(slug);
 
-    // Tip: give all fields a default value here
+    const userRef = doc(db, "users", uid);
+    const docRef = doc(userRef, "posts", slug);
+
+    // give all fields a default value here
     const data = {
       title,
       slug,
@@ -78,7 +80,7 @@ function CreateNewPost() {
       saveCount: 0,
     };
 
-    await ref.set(data);
+    await setDoc(docRef, data);
 
     toast.success("Post created!");
 

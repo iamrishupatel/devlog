@@ -1,5 +1,5 @@
 import "../styles/globals.css";
-import 'react-confirm-alert/src/react-confirm-alert.css'
+import "react-confirm-alert/src/react-confirm-alert.css";
 import Navbar from "../components/Navbar";
 
 import { Toaster } from "react-hot-toast";
