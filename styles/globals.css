@@ -19,6 +19,10 @@
   --color-green: #3bdf72;
   --color-gray: #b5bdc4;
   --color-white: #fff;
+
+  /* brand colors */
+  --color-github: #333;
+  --color-facebook: #3c5a99;
 }
 
 body {
@@ -149,12 +153,21 @@ button.btn-green {
   color: var(--color-white);
 }
 
-button.btn-google {
+.btn-login.google {
   background-color: var(--color-primary);
   color: var(--color-text);
+  border: 1px solid var(--color-border);
+}
+.btn-login.github {
+  background-color: var(--color-github);
+  color: #fff;
+}
+.btn-login.facebook {
+  background-color: var(--color-facebook);
+  color: #fff;
 }
 
-.btn-google img {
+.btn-login img {
   width: 30px;
   margin-right: 10px;
 }
@@ -285,7 +298,6 @@ button.btn-logo {
     font-size: 1.2rem;
   }
 }
-
 
 /*  confirm overlay */
 

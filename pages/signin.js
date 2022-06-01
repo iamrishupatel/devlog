@@ -1,4 +1,10 @@
-import { auth, db, googleAuthProvider } from "../lib/firebase";
+import {
+  auth,
+  db,
+  googleAuthProvider,
+  githubAuthProvider,
+  facebookAuthProvider,
+} from "../lib/firebase";
 import { UserContext } from "../lib/context/userContext";
 import Metatags from "../components/Metatags";
 
@@ -7,6 +13,8 @@ import debounce from "lodash.debounce";
 
 import { signInWithPopup } from "firebase/auth";
 import { writeBatch, doc, getDoc } from "firebase/firestore";
+import s from "../styles/Signin.module.css";
+import { handleSignInError } from "../lib/helpers";
 
 export default function SignInPage(props) {
   const { user, username } = useContext(UserContext);
@@ -15,34 +23,60 @@ export default function SignInPage(props) {
   // 2. user signed in, but missing username <UsernameForm />
   // 3. user signed in, has username <SignOutButton />
   return (
-    <main>
+    <main className="box-center">
       <Metatags
         title="Authentication"
         description="Sign up for this amazing app!"
       />
-      {user ? (
-        !username ? (
-          <UsernameForm />
-        ) : (
-          <SignOutButton />
-        )
-      ) : (
-        <SignInButton />
-      )}
+      {user ? !username ? <UsernameForm /> : <SignOutButton /> : <SignInBox />}
     </main>
   );
 }
 
 // Sign in with Google button
-function SignInButton() {
+function SignInBox() {
   const signInWithGoogle = async () => {
-    await signInWithPopup(auth, googleAuthProvider);
+    try {
+      await signInWithPopup(auth, googleAuthProvider);
+    } catch (err) {
+      handleSignInError(err);
+    }
+  };
+  const signInWithGithub = async () => {
+    try {
+      await signInWithPopup(auth, githubAuthProvider);
+    } catch (err) {
+      handleSignInError(err);
+    }
+  };
+
+  const signInWithFacebook = async () => {
+    try {
+      await signInWithPopup(auth, facebookAuthProvider);
+    } catch (err) {
+      handleSignInError(err);
+    }
   };
 
   return (
-    <button className="btn-google" onClick={signInWithGoogle}>
-      <img src={"/google.png"} width="30px" /> Sign in with Google
-    </button>
+    <div className={s.signinbox}>
+      <h1>Welcome to Devlog Community</h1>
+      <p>
+        We're a place where coders share, stay up-to-date and grow their
+        careers.
+      </p>
+      <br />
+      <button className="btn-login google" onClick={signInWithGoogle}>
+        <img src={"/google.png"} width="30px" /> Sign in with Google
+      </button>
+      <button className="btn-login github" onClick={signInWithGithub}>
+        <img src={"/github.png"} width="30px" /> Sign in with github
+      </button>
+
+      <button className="btn-login facebook" onClick={signInWithFacebook}>
+        <img src={"/fb_logo.png"} width="30px" /> Sign in with Facebook
+      </button>
+    </div>
   );
 }
 
