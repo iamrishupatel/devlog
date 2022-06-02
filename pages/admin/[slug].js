@@ -14,6 +14,8 @@ import toast from "react-hot-toast";
 import Metatags from "../../components/Metatags";
 import { confirmAlert } from "react-confirm-alert";
 import { doc, updateDoc, serverTimestamp, deleteDoc } from "firebase/firestore";
+import { useEffect } from "react";
+import Loader from "../../components/Loader";
 
 export default function AdminPostEdit(props) {
   return (
@@ -32,7 +34,25 @@ function PostManager() {
   const userRef = doc(db, "users", auth.currentUser.uid);
   const postRef = doc(userRef, "posts", slug);
 
-  const [post] = useDocumentDataOnce(postRef);
+  const [post, loading] = useDocumentDataOnce(postRef);
+
+  if (loading) {
+    return (
+      <main
+        style={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          height: "35rem",
+        }}
+      >
+        <Loader show />
+      </main>
+    );
+  }
+  if (!post) {
+    router.push("/not-found");
+  }
 
   return (
     <main className={s.container}>

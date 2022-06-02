@@ -25,13 +25,21 @@ export async function getStaticProps({ params }) {
 
   let post;
   let path;
+  let doesPostExists;
 
   if (userDoc) {
     const postRef = doc(userDoc.ref, "posts", slug);
-    post = postToJSON(await getDoc(postRef));
+    const postDoc = await getDoc(postRef);
+    post = postToJSON(postDoc);
     path = postRef.path;
+    doesPostExists = postDoc?.exists();
   }
 
+  if (!doesPostExists) {
+    return {
+      notFound: true,
+    };
+  }
   return {
     props: { post, path },
     revalidate: 100,
