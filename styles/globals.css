@@ -100,11 +100,6 @@ fieldset {
   padding: 1rem 0;
 }
 
-code {
-  overflow-x: scroll;
-  font-family: "Courier New", Courier, monospace;
-}
-
 /* Buttons */
 
 .btn,

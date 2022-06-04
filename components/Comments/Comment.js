@@ -1,7 +1,6 @@
 import { Fragment, useContext, useState } from "react";
 import Link from "next/link";
 import s from "./styles/Comments.module.css";
-import ReactMarkdown from "react-markdown";
 import { UserContext } from "../../lib/context/userContext";
 import { db, auth } from "../../lib/firebase";
 import { useDocument, useDocumentData } from "react-firebase-hooks/firestore";
@@ -26,6 +25,8 @@ import {
   increment,
   arrayUnion,
 } from "firebase/firestore";
+
+import MarkdownPreview from "../../components/MarkdownPreview";
 
 export default function Comment({
   comment,
@@ -84,7 +85,7 @@ export default function Comment({
                 />
               )}
           </div>
-          <ReactMarkdown>{comment.body}</ReactMarkdown>
+          <MarkdownPreview content={comment.body} />
         </div>
 
         {/* ===== Actions (hearts and reply) ==== */}

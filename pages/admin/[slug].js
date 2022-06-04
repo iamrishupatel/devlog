@@ -1,21 +1,21 @@
-import s from "../../styles/Admin.module.css";
-import AuthCheck from "../../components/AuthCheck";
-import { db, auth } from "../../lib/firebase";
-import ImageUploader from "../../components/ImageUploader";
-
 import { useState, Fragment } from "react";
 import { useRouter } from "next/router";
-
 import { useDocumentDataOnce } from "react-firebase-hooks/firestore";
 import { useForm } from "react-hook-form";
-import ReactMarkdown from "react-markdown";
 import Link from "next/link";
 import toast from "react-hot-toast";
-import Metatags from "../../components/Metatags";
 import { confirmAlert } from "react-confirm-alert";
-import { doc, updateDoc, serverTimestamp, deleteDoc } from "firebase/firestore";
-import { useEffect } from "react";
+
+import s from "../../styles/Admin.module.css";
+import { db, auth } from "../../lib/firebase";
+
+import AuthCheck from "../../components/AuthCheck";
+import ImageUploader from "../../components/ImageUploader";
+import MarkdownPreview from "../../components/MarkdownPreview";
+import Metatags from "../../components/Metatags";
 import Loader from "../../components/Loader";
+
+import { doc, updateDoc, serverTimestamp, deleteDoc } from "firebase/firestore";
 
 export default function AdminPostEdit(props) {
   return (
@@ -111,7 +111,7 @@ function PostForm({ defaultValues, postRef, preview, slug }) {
     <form onSubmit={handleSubmit(updatePost)}>
       {preview && (
         <div className="card">
-          <ReactMarkdown>{watch("content")}</ReactMarkdown>
+          <MarkdownPreview content={watch("content")} />
         </div>
       )}
 
