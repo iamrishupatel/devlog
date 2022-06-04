@@ -1,5 +1,5 @@
 import Link from "next/link";
-import ReactMarkdown from "react-markdown";
+import MarkdownPreview from "./MarkdownPreview";
 import format from "date-fns/format";
 
 // UI component for main post content
@@ -21,7 +21,7 @@ export default function PostContent({ post }) {
         </Link>{" "}
         on {createdAt}
       </span>
-      <ReactMarkdown>{post?.content}</ReactMarkdown>
+      <MarkdownPreview content={post?.content} />
     </div>
   );
 }

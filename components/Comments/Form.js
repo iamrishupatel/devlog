@@ -1,9 +1,10 @@
 import { useContext, useState } from "react";
 import s from "./styles/Form.module.css";
-import ReactMarkdown from "react-markdown";
 import { UserContext } from "../../lib/context/userContext";
 import { Formik } from "formik";
 import * as Yup from "yup";
+
+import MarkdownPreview from "../MarkdownPreview";
 
 const Form = ({
   initialValues,
@@ -39,7 +40,7 @@ const Form = ({
             {/* ==== preview ==== */}
             {preview && (
               <div className={s.preview}>
-                <ReactMarkdown>{values.body}</ReactMarkdown>
+                <MarkdownPreview content={values.body} />
               </div>
             )}
 

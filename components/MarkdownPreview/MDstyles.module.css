@@ -1,0 +1,12 @@
+.reactMarkdown table {
+  border-collapse: collapse;
+}
+.reactMarkdown li input {
+  width: fit-content;
+}
+.reactMarkdown table,
+.reactMarkdown th,
+.reactMarkdown td {
+  border: 1px solid var(--color-border);
+  padding: 0.2rem;
+}
