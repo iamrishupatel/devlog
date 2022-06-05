@@ -301,3 +301,15 @@ button.btn-logo {
   animation-duration: 0s !important;
   animation-delay: 0s !important;
 }
+
+.hero {
+  position: relative;
+}
+
+.exit-hero {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  font-size: 1.6rem;
+  cursor: pointer;
+}

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import PostFeed from "../components/PostFeed";
 import Metatags from "../components/Metatags";
 import Loader from "../components/Loader";
@@ -13,6 +13,7 @@ import {
   Timestamp,
   startAfter,
 } from "firebase/firestore";
+import { AiOutlineCloseCircle } from "react-icons/ai";
 
 // Max post to query per page
 const LIMIT = 10;
@@ -36,6 +37,7 @@ export default function Home(props) {
   const [posts, setPosts] = useState(props.posts);
   const [loading, setLoading] = useState(false);
   const [postsEnd, setPostsEnd] = useState(false);
+  const [exitedHero, setExitedHero] = useState(false);
 
   // Get next page in pagination query
   const getMorePosts = async () => {
@@ -65,25 +67,41 @@ export default function Home(props) {
     }
   };
 
+  useEffect(() => {
+    if (typeof window !== undefined) {
+      setExitedHero(localStorage.getItem("exited-hero"));
+    }
+  }, []);
+
+  const exitHero = () => {
+    localStorage.setItem("exited-hero", true);
+    setExitedHero(true);
+  };
   return (
     <main>
       <Metatags
         title="Devlog | Home"
         description="Get the latest posts on our site"
       />
-
-      <div className="card card-info">
-        <h2>💡 Welcome to Devlog</h2>
-        <p>
-          Welcome! This app is built with Next.js and Firebase and is loosely
-          inspired by Dev.to
-        </p>
-        <p>
-          Sign up for an 👨‍🎤 account, ✍️ write posts, then 💖 heart content
-          created by other users. All public content is server-rendered and
-          search-engine optimized.
-        </p>
-      </div>
+      {!exitedHero && (
+        <div className="card card-info hero">
+          <h2>💡 Welcome to Devlog</h2>
+          <p>
+            Welcome! This app is built with Next.js and Firebase and is loosely
+            inspired by Dev.to
+          </p>
+          <p>
+            Sign up for an 👨‍🎤 account, ✍️ write posts, then 💖 heart content
+            created by other users. All public content is server-rendered and
+            search-engine optimized.
+          </p>
+          <span className="exit-hero" onClick={exitHero}>
+            <abbr title="close">
+              <AiOutlineCloseCircle />
+            </abbr>
+          </span>
+        </div>
+      )}
 
       <PostFeed posts={posts} />
 
