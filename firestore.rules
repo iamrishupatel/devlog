@@ -22,7 +22,7 @@ service cloud.firestore {
       match /users/{userId}/posts/{postId} {
       	allow read;
         allow create: if canCreatePost(userId); 
-        allow update: if canUpdatePost(userId) || canIncrementHearts(userId, postId);
+        allow update: if canUpdatePost(userId) || canIncrementHearts(userId, postId) || canAddComments();
         allow delete: if request.auth.uid == userId;
       }
       
@@ -30,7 +30,21 @@ service cloud.firestore {
       	allow read;
         allow write: if request.auth.uid == heartId;
       }
-
+			// comments
+       match /users/{userId}/posts/{postId}/comments/{commentId} {
+      	allow read;
+        allow write;
+        allow update;
+        // allow update: if canIncrementHearts(userId, postId);
+        
+      }
+			// hear and unheart comments
+      match /users/{userId}/posts/{postId}/comments/{commentId}/hearts/{heartId} {
+      	allow read;
+        allow write: if request.auth.uid == heartId;
+      }
+      
+      
       // Users
 
       function isValidUser(userId) {
@@ -88,6 +102,15 @@ service cloud.firestore {
         return hasValidFields && validChange && ( countChange == 1 ? heartDocAdded : heartDocRemoved );
       }
       
+			function canAddComments(){
+        let hasValidFields = request.resource.data.diff(resource.data).affectedKeys().hasOnly(['commentCount']);
+        let currentUser = request.auth.token || request.auth.uid;
+        
+        // let countChange = request.resource.data.commentCount - resource.data.commentCount;
+        // let validChange = countChange == 1 || countChange == -1;
+
+        return hasValidFields;
+      }
 
       
     }
